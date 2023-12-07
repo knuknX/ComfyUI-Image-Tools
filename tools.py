@@ -1,34 +1,9 @@
-from .batch_resize_loader import batch_load_and_resize
-import torchvision.transforms as transforms
-import cv2
-import requests
-import numpy as np
+from .loader import load_from_path
+from .loader import load_from_url
+from .processor import resize_image
+from .processor import remove_background
 
-class BatchImageResizeProcessor:
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required":
-                    {
-                        "input_path": ("STRING", { "default": "" }),
-                        "output_path": ("STRING", { "default": ""}),
-                        "output_prefix": ("STRING", {"default": ""}),
-                        "size": (["512*768", "512*512", "768*768"],)
-                    },
-                }
-    RETURN_TYPES = ("STRING",)
-    FUNCTION = "batch_load"
-    OUTPUT_IS_LIST = (True,)
-    CATEGORY = "Tools"
-
-    def batch_load(self, input_path,  output_path, output_prefix, size):
-        if size == "512*768":
-            return (batch_load_and_resize(input_path,output_path,output_prefix,512,768),)
-        if size == "512*512":
-            return (batch_load_and_resize(input_path,output_path,output_prefix,512,512),)
-        if size == "768*768":
-            return (batch_load_and_resize(input_path,output_path,output_prefix,768,768),)
-        return (None,)
-
+# 单张图片路径加载器
 class SingleImagePathLoader:
     @classmethod
     def INPUT_TYPES(s):
@@ -40,14 +15,10 @@ class SingleImagePathLoader:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "load"
     CATEGORY = "Tools"
-
     def load(self, path):
-        transf = transforms.ToTensor()
-        image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) if image.ndim == 3 else image
-        image = transf(image_rgb).permute(1,2,0).unsqueeze(0)
-        return (image,)
+        return (load_from_path(path),)
 
+# 单张图片URL加载器
 class SingleImageUrlLoader:
     @classmethod
     def INPUT_TYPES(s):
@@ -59,28 +30,58 @@ class SingleImageUrlLoader:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "load"
     CATEGORY = "Tools"
-
     def load(self, url):
-        # 使用 requests 获取图像数据
-        response = requests.get(url)
-        # 将图像数据转换为 NumPy 数组
-        img_array = np.frombuffer(response.content, dtype=np.uint8)
-        # 使用 cv2.imdecode 解码图像
-        transf = transforms.ToTensor()
-        image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        return (load_from_url(url),)
 
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) if image.ndim == 3 else image
-        image = transf(image_rgb).permute(1,2,0).unsqueeze(0)
+# 图片标准尺寸调整处理器
+class ImageStandardResizeProcessor:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required":
+                    {
+                        "image": ("IMAGE",),
+                        "size": (["512*768", "512*512", "768*768"],)
+                    },
+                }
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "resize"
+    OUTPUT_IS_LIST = (True,)
+    CATEGORY = "Tools"
+    def resize(self, image, size):
+        if size == "512*768":
+            return (resize_image(image,512,768),)
+        if size == "512*512":
+            return (resize_image(image,512,512),)
+        if size == "768*768":
+            return (resize_image(image,768,768),)
         return (image,)
 
+# 图片背景移除处理器
+class ImageBgRemoveProcessor:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required":
+                    {
+                        "image": ("IMAGE",),
+                    },
+                }
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "remove"
+    OUTPUT_IS_LIST = (True,)
+    CATEGORY = "Tools"
+    def remove(self, image):
+        return (remove_background(image),)
+
 NODE_CLASS_MAPPINGS = {
-    "BatchImageResizeProcessor": BatchImageResizeProcessor,
     "SingleImagePathLoader": SingleImagePathLoader,
     "SingleImageUrlLoader": SingleImageUrlLoader,
+    "ImageStandardResizeProcessor": ImageStandardResizeProcessor,
+    "ImageBgRemoveProcessor": ImageBgRemoveProcessor,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "BatchImageResizeProcessor": "BatchImageResizeProcessor",
     "SingleImagePathLoader": "SingleImagePathLoader",
     "SingleImageUrlLoader": "SingleImageUrlLoader",
+    "ImageStandardResizeProcessor": "ImageStandardResizeProcessor",
+    "ImageBgRemoveProcessor": ImageBgRemoveProcessor,
 }
