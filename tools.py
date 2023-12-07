@@ -45,7 +45,6 @@ class ImageStandardResizeProcessor:
                 }
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "resize"
-    OUTPUT_IS_LIST = (True,)
     CATEGORY = "Tools"
     def resize(self, image, size):
         if size == "512*768":
@@ -67,7 +66,6 @@ class ImageBgRemoveProcessor:
                 }
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "remove"
-    OUTPUT_IS_LIST = (True,)
     CATEGORY = "Tools"
     def remove(self, image):
         return (remove_background(image),)
@@ -83,5 +81,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SingleImagePathLoader": "SingleImagePathLoader",
     "SingleImageUrlLoader": "SingleImageUrlLoader",
     "ImageStandardResizeProcessor": "ImageStandardResizeProcessor",
-    "ImageBgRemoveProcessor": ImageBgRemoveProcessor,
+    "ImageBgRemoveProcessor": "ImageBgRemoveProcessor",
 }

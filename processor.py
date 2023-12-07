@@ -2,8 +2,8 @@ import cv2
 import torch
 import numpy as np
 from rembg import remove
-from utils import tensorToNumpy
-from utils import numpyToTensor
+from .utils import tensorToNumpy
+from .utils import numpyToTensor
 
 def resize_image(image, target_width=512, target_height=768):
     # 如果是tensor就转成numpy
@@ -53,6 +53,9 @@ def resize_image(image, target_width=512, target_height=768):
 def remove_background(image):
     # 如果是tensor就转成numpy
     if isinstance(image, torch.Tensor):
-        image = tensorToNumpy(image)
-    image = remove(image, bgcolor=(255, 255, 255, 255), alpha_matting_erode_size=1)
+        image = tensorToNumpy(image) * 255.0
+        image = image.astype(np.uint8)
+
+    print(image)
+    image = remove(image, bgcolor=(255, 255, 255, 255))
     return numpyToTensor(image)
