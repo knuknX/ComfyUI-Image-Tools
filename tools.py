@@ -74,13 +74,13 @@ class SingleImageUrlLoader:
         return (image,)
 
 NODE_CLASS_MAPPINGS = {
-    "CDL.BatchImageResizeProcessor": BatchImageResizeProcessor,
-    "CDL.SingleImagePathLoader": SingleImagePathLoader,
-    "CDL.SingleImageUrlLoader": SingleImageUrlLoader,
+    "BatchImageResizeProcessor": BatchImageResizeProcessor,
+    "SingleImagePathLoader": SingleImagePathLoader,
+    "SingleImageUrlLoader": SingleImageUrlLoader,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "CDL.BatchImageResizeProcessor": "BatchImageResizeProcessor",
-    "CDL.SingleImagePathLoader": "SingleImagePathLoader",
-    "CDL.SingleImageUrlLoader": "SingleImageUrlLoader",
+    "BatchImageResizeProcessor": "BatchImageResizeProcessor",
+    "SingleImagePathLoader": "SingleImagePathLoader",
+    "SingleImageUrlLoader": "SingleImageUrlLoader",
 }
