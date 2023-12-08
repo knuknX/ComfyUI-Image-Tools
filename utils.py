@@ -3,7 +3,8 @@ import torchvision.transforms as transforms
 # numpy转tensor
 def numpyToTensor(numpy):
     transf = transforms.ToTensor()
-    return transf(numpy).permute(1, 2, 0).unsqueeze(0)
+    tensor = transf(numpy).permute(1, 2, 0).unsqueeze(0)
+    return tensor
 
 # tensor转numpy
 def tensorToNumpy(tensor):
