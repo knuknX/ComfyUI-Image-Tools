@@ -70,27 +70,11 @@ class ImageBgRemoveProcessor:
     def remove(self, image):
         return (remove_background(image),)
 
-# 图片移除处理器
-class ImageBatchSqueezeProcessor:
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required":
-                    {
-                        "image": ("IMAGE",),
-                    },
-                }
-    RETURN_TYPES = ("IMAGE",)
-    FUNCTION = "squeeze"
-    CATEGORY = "Tools"
-    def squeeze(self, image):
-        return (image.squeeze(0),)
-
 NODE_CLASS_MAPPINGS = {
     "SingleImagePathLoader": SingleImagePathLoader,
     "SingleImageUrlLoader": SingleImageUrlLoader,
     "ImageStandardResizeProcessor": ImageStandardResizeProcessor,
     "ImageBgRemoveProcessor": ImageBgRemoveProcessor,
-    "ImageBatchSqueezeProcessor": ImageBatchSqueezeProcessor,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -98,5 +82,4 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SingleImageUrlLoader": "SingleImageUrlLoader",
     "ImageStandardResizeProcessor": "ImageStandardResizeProcessor",
     "ImageBgRemoveProcessor": "ImageBgRemoveProcessor",
-    "ImageBatchSqueezeProcessor": "ImageBatchSqueezeProcessor",
 }

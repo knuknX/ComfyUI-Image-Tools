@@ -6,6 +6,7 @@ from .utils import numpyToTensor
 
 # 从路径中加载图片
 def load_from_path(path):
+    print(path)
     image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) if image.ndim == 3 else image
     return numpyToTensor(image_rgb)
