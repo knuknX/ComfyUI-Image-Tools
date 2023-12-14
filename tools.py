@@ -70,11 +70,43 @@ class ImageBgRemoveProcessor:
     def remove(self, image):
         return (remove_background(image),)
 
+# 图片背景移除处理器
+class BatchImagePathLoader:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required":
+                    {
+                        "path": ("STRING",{ "default": "" }),
+                    },
+                }
+    RETURN_TYPES = ("IMAGE",)
+    FUNCTION = "load"
+    OUTPUT_IS_LIST = (True,)
+    CATEGORY = "Tools"
+    def load(self, path):
+        import os
+        import glob
+        def get_image_paths(folder_path, extensions=['jpg', 'jpeg', 'png', 'gif', 'webp']):
+            image_paths = []
+            for extension in extensions:
+                pattern = os.path.join(folder_path, f'*.{extension}')
+                image_paths.extend(glob.glob(pattern))
+            return image_paths
+
+        image_paths = get_image_paths(path)
+
+        # 加載所有圖片
+        images = []
+        for image_path in image_paths:
+            images.append(load_from_path(image_path))
+        return (images,)
+
 NODE_CLASS_MAPPINGS = {
     "SingleImagePathLoader": SingleImagePathLoader,
     "SingleImageUrlLoader": SingleImageUrlLoader,
     "ImageStandardResizeProcessor": ImageStandardResizeProcessor,
     "ImageBgRemoveProcessor": ImageBgRemoveProcessor,
+    "BatchImagePathLoader": BatchImagePathLoader,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -82,4 +114,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "SingleImageUrlLoader": "SingleImageUrlLoader",
     "ImageStandardResizeProcessor": "ImageStandardResizeProcessor",
     "ImageBgRemoveProcessor": "ImageBgRemoveProcessor",
+    "BatchImagePathLoader": "BatchImagePathLoader",
 }
