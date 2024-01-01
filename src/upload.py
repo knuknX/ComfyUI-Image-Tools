@@ -49,4 +49,6 @@ def upload_to_chevereto(image, url, key):
         }
         print(imageDTO)
         image_info_list.append(imageDTO)
-    return json.dumps(image_info_list)
+    json_str = json.dumps(image_info_list)
+    print(json_str)
+    return json_str
