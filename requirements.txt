@@ -1,1 +1,6 @@
 rembg
+opencv-python
+torchvision
+torch
+numpy
+requests
