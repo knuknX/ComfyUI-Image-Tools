@@ -139,6 +139,26 @@ class JSONMessageNotifyTool:
     def notify(self, url, message):
         return (post_notify(url, json_data=json.loads(message)),)
 
+
+class PreviewJSONNode:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {
+            "required": {
+                "text": ("STRING", {"forceInput": True}),
+            },
+            "hidden": {"prompt": "PROMPT", "extra_pnginfo": "EXTRA_PNGINFO"},
+        }
+
+    RETURN_TYPES = ("STRING",)
+    OUTPUT_NODE = True
+    FUNCTION = "preview_json"
+
+    CATEGORY = "Tools"
+
+    def preview_json(self, text, prompt=None, extra_pnginfo=None):
+        return {"ui": {"string": [json.dumps(json.loads(text), indent=4), ]}, "result": (text,)}
+
 NODE_CLASS_MAPPINGS = {
     "SingleImagePathLoader": SingleImagePathLoader,
     "SingleImageUrlLoader": SingleImageUrlLoader,
@@ -147,6 +167,7 @@ NODE_CLASS_MAPPINGS = {
     "BatchImagePathLoader": BatchImagePathLoader,
     "ImageCheveretoUploader": ImageCheveretoUploader,
     "JSONMessageNotifyTool": JSONMessageNotifyTool,
+    "PreviewJSONNode": PreviewJSONNode,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -157,4 +178,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "BatchImagePathLoader": "BatchImagePathLoader",
     "ImageCheveretoUploader": "ImageCheveretoUploader",
     "JSONMessageNotifyTool": "JSONMessageNotifyTool",
+    "PreviewJSONNode": "PreviewJSONNode",
 }
