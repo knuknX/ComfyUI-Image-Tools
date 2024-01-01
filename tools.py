@@ -1,7 +1,12 @@
-from .loader import load_from_path
-from .loader import load_from_url
-from .processor import resize_image
-from .processor import remove_background
+import json
+
+from .src.loader import load_from_path
+from .src.loader import load_from_url
+from .src.notify import post_notify
+from .src.processor import resize_image
+from .src.processor import remove_background
+from .src.upload import upload_to_chevereto
+
 
 # 单张图片路径加载器
 class SingleImagePathLoader:
@@ -101,12 +106,47 @@ class BatchImagePathLoader:
             images.append(load_from_path(image_path))
         return (images,)
 
+# 图片上传到chevereto
+class ImageCheveretoUploader:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required":
+                    {
+                        "image": ("IMAGE",),
+                        "url": ("STRING", {"default": ""}),
+                        "key": ("STRING", {"default": ""})
+                    },
+                }
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "upload"
+    CATEGORY = "Tools"
+    def upload(self, image, url, key):
+        return (upload_to_chevereto(image,url,key),)
+
+# 发送通知消息
+class JSONMessageNotifyTool:
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required":
+                    {
+                        "url": ("STRING", {"default": ""}),
+                        "message": ("STRING", {"default": ""})
+                    },
+                }
+    RETURN_TYPES = ("STRING",)
+    FUNCTION = "notify"
+    CATEGORY = "Tools"
+    def notify(self, url, message):
+        return (post_notify(url, json_data=json.loads(message)),)
+
 NODE_CLASS_MAPPINGS = {
     "SingleImagePathLoader": SingleImagePathLoader,
     "SingleImageUrlLoader": SingleImageUrlLoader,
     "ImageStandardResizeProcessor": ImageStandardResizeProcessor,
     "ImageBgRemoveProcessor": ImageBgRemoveProcessor,
     "BatchImagePathLoader": BatchImagePathLoader,
+    "ImageCheveretoUploader": ImageCheveretoUploader,
+    "JSONMessageNotifyTool": JSONMessageNotifyTool,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -115,4 +155,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ImageStandardResizeProcessor": "ImageStandardResizeProcessor",
     "ImageBgRemoveProcessor": "ImageBgRemoveProcessor",
     "BatchImagePathLoader": "BatchImagePathLoader",
+    "ImageCheveretoUploader": "ImageCheveretoUploader",
+    "JSONMessageNotifyTool": "JSONMessageNotifyTool",
 }
